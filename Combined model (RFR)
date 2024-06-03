@@ -1,0 +1,52 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.inspection import permutation_importance
+import numpy as np
+
+# import methylome and combined dataset from Google drive path
+methylome = pd.read_csv('/content/drive/MyDrive/Thesis datasets/chromatineprofilingX.csv')
+combined = pd.read_csv('/content/drive/MyDrive/Thesis datasets/combined.csv') 
+
+# defingin X and y for modeling [keeping the valuaes and removing cell line IDs]
+X = combined.drop(['ID', 'DepMap_ID', 'key_y'], axis=1) 
+y = methylome.drop(['ID', 'BroadID'], axis=1)
+
+#spliting X and y to 75% train and 25% test set
+X_train, X_test, y_train, y_test = train_test_split (X, y, test_size = 0.25, random_state = 123)
+
+FI = {} #-->defining an empty dictionary for saving feature importance results
+
+kf = KFold(n_splits=10, shuffle=True, random_state=123) #spliting to 10fold 
+
+for i in y.columns:
+  y_train_i = y_train_i [,i]
+  y_test_i = y_test_i [,i]
+
+  rf = RandomForestRegressor() #initiating RFR model
+  CV_MSE = cross_val_score(rf, X_train, y_train_i, cv=kf, scoring='neg_mean_squared_error') #calculating MSE on train cross validation data
+
+  #fitting RFR on the train data
+  rf.fit(X_train, y_train_i)
+  y_pred = rf.predict(X_test)
+
+  # calculating P value of each histone mark (y.columns[,i]) based on MSE of null hypothesis
+  score, perm_score, Pvalue = permutation_test_score(rf, X_test, y_test_i, scoring='MSE', n_permutations=100, random_state=123)
+
+  # Compute the mean and standard deviation of cross-validation scores
+  MSE_mean = np.mean(CV_MSE)
+  MSE_std = np.std(CV_MSE)
+  MSE_test = mse_score(y_test_i, y_pred)
+
+  print(f"P value for column '{i}': {Pvalue:.4f}")
+  print(f"CV MSE for '{i}': {MSE_mean_mean:.4f} ± {MSE_std:.4f}")
+  print(f" TestMSE for '{i}' : {MSE_test:.4f}")
+  
+  FI[i] = rf.feature_importances_ # saving each histone methylation marks features importance in the FI dictionary
+
+
+#save the results as a csv file
+FI_df = pd.DataFrame(FI, index=X.columns)
+FI_df.to_csv('FI_Combined_df.csv')
+
