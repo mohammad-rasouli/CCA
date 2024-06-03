@@ -1,6 +1,6 @@
 library(biomaRt)
-
-transcript <- read.csv("C:/Users/mohammad/OneDrive/Desktopd/datasets/RNA_filtered.csv", header = TRUE)
+setwd ("C:/Users/mohammad/OneDrive/Desktopd/datasets")
+transcript <- read.csv("RNA_filtered.csv", header = TRUE)
 ensg <- colnames(df) # taking ensg ids and save them as a list
 
 ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl") #creating biomart object
