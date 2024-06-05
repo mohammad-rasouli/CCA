@@ -1,5 +1,5 @@
 library(biomaRt)
-setwd ("C:/Users/mohammad/OneDrive/Desktop/datasets")
+setwd ("C:/Users/mohammad/Desktop/Thesis/datasets")
 transcript <- read.csv("RNA_filtered.csv", header = TRUE)
 ensg <- colnames(transcript) # taking ensg ids and save them as a list
 
