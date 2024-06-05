@@ -6,7 +6,7 @@ from sklearn.inspection import permutation_importance
 import numpy as np
 
 # import methylome and combined dataset from Google drive path
-methylome = pd.read_csv('/content/drive/MyDrive/Thesis datasets/chromatineprofilingX.csv')
+methylome = pd.read_csv('/content/drive/MyDrive/Thesis datasets/methylome.csv')
 combined = pd.read_csv('/content/drive/MyDrive/Thesis datasets/combined.csv') 
 
 # defingin X and y for modeling [keeping the valuaes and removing cell line IDs]
